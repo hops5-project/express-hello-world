@@ -1,0 +1,135 @@
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Терминал логов с переходом</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            padding: 10px;
+            margin: 0;
+            height: 100vh;
+            overflow-y: scroll;
+        }
+        #skull {
+            white-space: pre;
+            line-height: 1;
+            font-size: 10px;
+            margin-bottom: 20px;
+        }
+        .log {
+            margin-bottom: 2px;
+        }
+        .error { color: #f00; }
+        .warning { color: #ff0; }
+        .info { color: #0ff; }
+        .success { color: #0f0; }
+        #countdown {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            color: #f00;
+        }
+    </style>
+</head>
+<body>
+    <div id="skull">
+                 uuuuuuu
+             uu$$$$$$$$$$$uu
+          uu$$$$$$$$$$$$$$$$$uu
+         u$$$$$$$$$$$$$$$$$$$$$u
+        u$$$$$$$$$$$$$$$$$$$$$$$u
+       u$$$$$$$$$$$$$$$$$$$$$$$$$u
+       u$$$$$$$$$$$$$$$$$$$$$$$$$u
+       u$$$$$$"   "$$$"   "$$$$$$u
+       "$$$$"      u$u       $$$$"
+        $$$u       u$u       u$$$
+        $$$u      u$$$u      u$$$
+         "$$$$uu$$$   $$$uu$$$$"
+          "$$$$$$$"   "$$$$$$$"
+            u$$$$$$$u$$$$$$$u
+             u$"$"$"$"$"$"$u
+  uuu        $$u$ $ $ $ $u$$       uuu
+ u$$$$        $$$$$u$u$u$$$       u$$$$
+  $$$$$uu      "$$$$$$$$$"     uu$$$$$$
+u$$$$$$$$$$$uu    """""    uuuu$$$$$$$$$$
+$$$$"""$$$$$$$$$$uuu   uu$$$$$$$$$"""$$$"
+ """      ""$$$$$$$$$$$uu ""$"""
+           uuuu ""$$$$$$$$$$uuu
+  u$$$uuu$$$$$$$$$uu ""$$$$$$$$$$$uuu$$$
+  $$$$$$$$$$""""           ""$$$$$$$$$$$"
+   "$$$$$"                      ""$$$$""
+     $$$"                         $$$$"
+    </div>
+    <div id="terminal"></div>
+    <div id="countdown"></div>
+
+    <script>
+        const logTypes = [
+            { type: 'error', prefix: '[ERROR]', color: 'error' },
+            { type: 'warning', prefix: '[WARNING]', color: 'warning' },
+            { type: 'info', prefix: '[INFO]', color: 'info' },
+            { type: 'success', prefix: '[SUCCESS]', color: 'success' }
+        ];
+
+        const systemComponents = [
+            'DB', 'Net', 'Auth', 'Pay', 'User', 'Cache', 'Queue', 'API'
+        ];
+
+        const messages = [
+            'Timeout', 'Invalid cred', 'Not found', 'Denied',
+            'Mem alloc fail', 'Null ptr', 'Config mismatch',
+            'Op success', 'User auth', 'Data sync', 'Config upd',
+            'Srv start', 'Backup done', 'Sys init', 'Dep check',
+            'Load config', 'Prep env', 'Scan net'
+        ];
+
+        function generateRandomLog() {
+            const logType = logTypes[Math.floor(Math.random() * logTypes.length)];
+            const component = systemComponents[Math.floor(Math.random() * systemComponents.length)];
+            const message = messages[Math.floor(Math.random() * messages.length)];
+            const timestamp = new Date().toISOString().split('T')[1].split('.')[0];
+            return `${timestamp} ${logType.prefix} [${component}] ${message}`;
+        }
+
+        function addLog() {
+            const terminal = document.getElementById('terminal');
+            const logElement = document.createElement('div');
+            const log = generateRandomLog();
+            
+            const logType = logTypes.find(type => log.includes(type.prefix));
+            logElement.classList.add('log', logType.color);
+            logElement.textContent = log;
+            
+            terminal.appendChild(logElement);
+            if (terminal.childNodes.length > 100) {
+                terminal.removeChild(terminal.firstChild);
+            }
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+
+        // Генерация логов каждые 50-200 мс
+        function startLogging() {
+            setInterval(addLog, Math.random() * 150 + 50);
+        }
+
+        // Начать генерацию логов при загрузке страницы
+        startLogging();
+
+        // Обратный отсчет и переход на Google
+        let countdown = 4;
+        const countdownElement = document.getElementById('countdown');
+        const countdownInterval = setInterval(function() {
+            countdownElement.textContent = countdown;
+            countdown--;
+            if (countdown < 0) {
+                clearInterval(countdownInterval);
+                window.location.href = 'https://www.gosuslugi.ru/';
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
